@@ -62,6 +62,7 @@ class Project{
 
 def projects = [new Project(gitUrl:"https://github.com/johannesGunnback/child1.git", projectDir:"child1"),
                 new Project(gitUrl:"https://github.com/johannesGunnback/child2.git", projectDir:"child2"),
+                new Project(gitUrl:"https://github.com/johannesGunnback/module.git", projectDir:"module"),
                 new Project(gitUrl:"https://github.com/johannesGunnback/parent.git", projectDir:"parent")];
 
 def cloneRepos(List<Project> projects) {
@@ -85,7 +86,7 @@ def checkOutBranch(String branch, List<Project> projects){
 }
 
 def release(List<Project> projects, boolean useReleaseVersion, String branch){
-    Project superPom = getProject("pom.super", projects);
+    Project superPom = getProject("parent", projects);
     String thePomPath = superPom.projectDir+"/pom.xml";
     String originalVersion = getOriginalVersion(thePomPath);
     String releaseVersion = originalVersion;
@@ -118,20 +119,15 @@ def release(List<Project> projects, boolean useReleaseVersion, String branch){
 
 def setVersion(String version, List<Project> projects, boolean allowSnapshots){
     println "Set new version $version"
-    Project superPom = getProject("pom.super", projects);
-    Project modules = getProject("modules", projects);
-    Project pomParentWar = getProject("pom.parent-war", projects);
+    Project superPom = getProject("parent", projects);
+    Project modules = getProject("module", projects);
     String range = getAllowedVersionRange(version);
     execute("mvn versions:set -DallowSnapshots=$allowSnapshots -DnewVersion=$version", superPom.projectDir);
     execute("mvn clean install", superPom.projectDir);
     execute("mvn versions:commit", superPom.projectDir)
-    execute("mvn versions:update-parent -DallowSnapshots=$allowSnapshots -DparentVersion=$range", pomParentWar.projectDir);
-    execute("mvn clean install", pomParentWar.projectDir);
-    execute("mvn versions:commit", pomParentWar.projectDir)
-    execute("mvn -Prelease-script versions:update-parent -DallowSnapshots=$allowSnapshots -DparentVersion=$range", modules.projectDir);
+    execute("mvn versions:update-parent -DallowSnapshots=$allowSnapshots -DparentVersion=$range", modules.projectDir);
     println "Running a clean install this could take a few minutes..."
-    execute("mvn clean install -Prelease-script", modules.projectDir);
-    execute("mvn versions:commit -Prelease-script", pomParentWar.projectDir)
+    execute("mvn clean install", modules.projectDir);
 }
 
 def getAllowedVersionRange(String version){
