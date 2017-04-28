@@ -62,13 +62,7 @@ class Project{
 
 def projects = [new Project(gitUrl:"https://github.com/johannesGunnback/child1.git", projectDir:"child1"),
                 new Project(gitUrl:"https://github.com/johannesGunnback/child2.git", projectDir:"child2"),
-                new Project(gitUrl:"https://github.com/johannesGunnback/parent.git", projectDir:"parent"),
-                new Project(gitUrl:"http://cuso.edb.se/stash/scm/lplan/loanprocess.v1_0.git", projectDir:"loanprocess.v1_0"),
-                new Project(gitUrl:"http://cuso.edb.se/stash/scm/lplan/war.loanprocess-dev.git", projectDir:"war.loanprocess-dev"),
-                new Project(gitUrl:"http://cuso.edb.se/stash/scm/lplan/dw-batch.v1_0.git", projectDir:"dw-batch.v1_0"),
-                new Project(gitUrl:"http://cuso.edb.se/stash/scm/lplan/database-tools.git", projectDir:"database-tools"),
-                new Project(gitUrl:"http://cuso.edb.se/stash/scm/lplan/modules.git", projectDir:"modules"),
-                new Project(gitUrl:"http://cuso.edb.se/stash/scm/lplan/configuration.war.loanprocess-dev.git", projectDir:"configuration.war.loanprocess-dev")];
+                new Project(gitUrl:"https://github.com/johannesGunnback/parent.git", projectDir:"parent")];
 
 def cloneRepos(List<Project> projects) {
     for(Project project : projects){
